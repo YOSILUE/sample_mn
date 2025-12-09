@@ -13,7 +13,7 @@ function log(msg) {
 //----------------------------------------------------
 log("[INIT] ORT 設定開始...");
 
-ort.env.wasm.wasmPaths = "./onnx";
+ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx";
 ort.env.wasm.numThreads = 1;
 
 log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
@@ -21,7 +21,7 @@ log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 //----------------------------------------------------
 // モデルロード
 //----------------------------------------------------
-const modelPath = "./model/best.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // グローバル変数
