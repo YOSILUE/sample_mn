@@ -75,31 +75,45 @@ try {
   // YOLO 用の前処理 (ImageData → Float32 CHW)
   log("[RUN] 入力テンソル作成中...");
 
-  const width = imgWidth;
-  const height = imgHeight;
+  // --- ① ImageData を YOLO サイズにリサイズ（640×640推奨） ---
+  const target = 640;
 
-  // ImageData.data → RGBA → RGB → CHW(float32)
-  const chw = new Float32Array(3 * width * height);
+  const canvas = document.createElement("canvas");
+  canvas.width = target;
+  canvas.height = target;
+  const ctx = canvas.getContext("2d");
+
+  // 大きい ImageData をリサイズして描画
+  ctx.drawImage(
+    imgElement,      // ← ここ重要！ImageData ではなく画像要素を使う
+    0, 0, imgWidth, imgHeight,
+    0, 0, target, target
+  );
+
+  const resized = ctx.getImageData(0, 0, target, target);
+
+  // --- ② RGB → CHW float32 ---
+  const chw = new Float32Array(3 * target * target);
   let p = 0;
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const index = (y * width + x) * 4;
+  for (let y = 0; y < target; y++) {
+    for (let x = 0; x < target; x++) {
 
-      const r = imgData.data[index] / 255;
-      const g = imgData.data[index + 1] / 255;
-      const b = imgData.data[index + 2] / 255;
+      const index = (y * target + x) * 4;
 
-      // CHW：R → G → B の順に詰める
+      const r = resized.data[index]     / 255;
+      const g = resized.data[index + 1] / 255;
+      const b = resized.data[index + 2] / 255;
+
       chw[p] = r;
-      chw[p + width * height] = g;
-      chw[p + width * height * 2] = b;
+      chw[p + target * target] = g;
+      chw[p + 2 * target * target] = b;
 
       p++;
     }
   }
-
-  // 4D tensor (1,3,H,W)
+  
+  // --- ③ 4D Tensor (1,3,640,640) ---
   const tensor = new ort.Tensor("float32", chw, [1, 3, height, width]);
 
   log("[RUN] 実行中...");
