@@ -65,26 +65,54 @@ document.getElementById("runBtn").onclick = async () => {
     return;
   }
 
-  try {
-    if (!session) {
-      log("[SESSION] セッション初期化開始...");
-      session = await ort.InferenceSession.create(modelPath);
-      log("[SESSION] セッション初期化完了");
-    }
-
-    // YOLO 用の前処理は必要に応じて追加
-    log("[RUN] 入力テンソル作成中...");
-    const tensor = new ort.Tensor("float32", new Float32Array([0]), [1, 1]);
-
-    log("[RUN] 実行中...");
-    const outputs = await session.run({ images: tensor });
-
-    log("[RUN] 推論成功！");
-    log(JSON.stringify(outputs, null, 2));
-
-  } catch (e) {
-    log("[ERROR] 推論失敗: " + e);
+try {
+  if (!session) {
+    log("[SESSION] セッション初期化開始...");
+    session = await ort.InferenceSession.create(modelPath);
+    log("[SESSION] セッション初期化完了");
   }
+
+  // YOLO 用の前処理 (ImageData → Float32 CHW)
+  log("[RUN] 入力テンソル作成中...");
+
+  const width = imgWidth;
+  const height = imgHeight;
+
+  // ImageData.data → RGBA → RGB → CHW(float32)
+  const chw = new Float32Array(3 * width * height);
+  let p = 0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const index = (y * width + x) * 4;
+
+      const r = imgData.data[index] / 255;
+      const g = imgData.data[index + 1] / 255;
+      const b = imgData.data[index + 2] / 255;
+
+      // CHW：R → G → B の順に詰める
+      chw[p] = r;
+      chw[p + width * height] = g;
+      chw[p + width * height * 2] = b;
+
+      p++;
+    }
+  }
+
+  // 4D tensor (1,3,H,W)
+  const tensor = new ort.Tensor("float32", chw, [1, 3, height, width]);
+
+  log("[RUN] 実行中...");
+
+  // 入力名 `images` で推論
+  const outputs = await session.run({ images: tensor });
+
+  log("[RUN] 推論成功！");
+  log(JSON.stringify(outputs, null, 2));
+
+} catch (e) {
+  log("[ERROR] 推論失敗: " + e);
+}
 };
 
 log("[INIT] main.js 完了");
