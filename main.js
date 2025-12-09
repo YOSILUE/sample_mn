@@ -1,90 +1,45 @@
-//----------------------------------------------------
-// デバッグログ用
-//----------------------------------------------------
+// ログ出力
 function log(msg) {
-  console.log(msg);
   const area = document.getElementById("logArea");
-  area.textContent += msg + "\n";
+  const time = new Date().toLocaleTimeString();
+  area.textContent += "[" + time + "] " + msg + "\n";
   area.scrollTop = area.scrollHeight;
+  console.log(msg);
 }
 
-//----------------------------------------------------
-// WASM ローダー設定
-//----------------------------------------------------
-log("[INIT] ORT 設定開始...");
-
-ort.env.wasm.wasmPaths = "./onnx";
-ort.env.wasm.numThreads = 1;
-
-log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
-
-//----------------------------------------------------
-// モデルロード
-//----------------------------------------------------
-const modelPath = "./model/best.onnx";
-log("[INIT] モデルパス = " + modelPath);
-
-// グローバル変数
-let session = null;
-let inputImageData = null;
-
-//----------------------------------------------------
-// 画像プレビュー
-//----------------------------------------------------
-document.getElementById("imageInput").onchange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-  document.getElementById("preview").src = url;
-  log("[IMAGE] プレビュー表示完了: " + file.name);
-
-  // 画像読み込み
-  const img = new Image();
-  img.onload = () => {
-    const c = document.createElement("canvas");
-    c.width = img.width;
-    c.height = img.height;
-    const ctx = c.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-
-    inputImageData = ctx.getImageData(0, 0, img.width, img.height);
-    log("[IMAGE] ImageData 取得完了: " + img.width + "x" + img.height);
-  };
-  img.src = url;
+// onload
+window.onload = () => {
+  log("ページ読み込み成功：onload 発火済み（ONNX テスト版: external files）");
 };
 
-//----------------------------------------------------
-// 推論実行
-//----------------------------------------------------
-document.getElementById("runBtn").onclick = async () => {
-  log("[RUN] 推論開始...");
+// モデル読み込みテスト
+document.getElementById("loadModelBtn").onclick = async () => {
+  log("=== モデル読み込みテスト開始 ===");
 
-  if (!inputImageData) {
-    log("[ERROR] 画像が読み込まれていません。");
-    return;
-  }
+  const modelUrl = "https://yosilue.github.io/sample_mn/model/best.onnx";
 
   try {
-    if (!session) {
-      log("[SESSION] セッション初期化開始...");
-      session = await ort.InferenceSession.create(modelPath);
-      log("[SESSION] セッション初期化完了");
+    log("モデル取得(fetch)開始：" + modelUrl);
+
+    const res = await fetch(modelUrl);
+    log("HTTP status: " + res.status);
+
+    if (!res.ok) {
+      log("取得失敗：res.ok = false");
+      return;
     }
 
-    // YOLO 用の前処理は必要に応じて追加
-    log("[RUN] 入力テンソル作成中...");
-    const tensor = new ort.Tensor("float32", new Float32Array([0]), [1, 1]);
+    const arrayBuffer = await res.arrayBuffer();
+    log("取得成功：バイト数 = " + arrayBuffer.byteLength);
 
-    log("[RUN] 実行中...");
-    const outputs = await session.run({ images: tensor });
+    // ONNX Runtime でロード
+    log("ONNX Runtime: InferenceSession 作成開始...");
+    const session = await ort.InferenceSession.create(arrayBuffer);
+    log("ONNX Runtime: モデル読み込み成功！");
 
-    log("[RUN] 推論成功！");
-    log(JSON.stringify(outputs, null, 2));
-
-  } catch (e) {
-    log("[ERROR] 推論失敗: " + e);
+  } catch (err) {
+    log("モデル読み込みエラー: " + err);
   }
-};
 
-log("[INIT] main.js 完了");
+  log("=== モデル読み込みテスト終了 ===");
+};
