@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>YOLO ONNX 推論デバッグ版</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>YOLO ONNX 推論（デバッグ版）</h2>
+
+<input type="file" id="imageInput" accept="image/*" />
+<button id="runBtn">推論実行</button>
+
+<div>
+  <img id="preview" width="400">
+</div>
+
+<pre id="logArea"></pre>
+
+<script src="onnx/ort.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

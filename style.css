@@ -1,0 +1,14 @@
+body {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+#logArea {
+  background: #111;
+  color: #0f0;
+  padding: 10px;
+  height: 260px;
+  overflow-y: scroll;
+  border: 1px solid #555;
+  font-size: 12px;
+}
