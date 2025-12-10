@@ -28,10 +28,9 @@ log("[INIT] モデルパス = " + modelPath);
 let session = null;
 let inputImageData = null;
 
-//window.addEventListener("load", function() {
 function modelload(){
    // ページの読み込みが完了した後で実行したい処理
-   log("[INFO] ページの読み込み完了");
+   log("[INFO] ページの読み込み完了02");
   try {
     if (!session) {
       log("[SESSION] セッション初期化開始...");
