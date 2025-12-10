@@ -14,8 +14,3 @@ body {
   scrollbar-color: hotpink #c0c0c0;
   scrollbar-width: auto;
 }
-
-#logArea::-webkit-scrollbar-thumb {
-border-radius: 50px;
-background: #1959A8;
-}
