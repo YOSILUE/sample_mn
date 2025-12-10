@@ -72,10 +72,9 @@ try {
     log("[SESSION] セッション初期化完了");
   }
 
-  // YOLO 用の前処理 (ImageData → Float32 CHW)
   log("[RUN] 入力テンソル作成中...");
 
-  // --- ① ImageData を YOLO サイズにリサイズ（640×640推奨） ---
+  // 640x640 にリサイズする
   const target = 640;
 
   const canvas = document.createElement("canvas");
@@ -83,27 +82,27 @@ try {
   canvas.height = target;
   const ctx = canvas.getContext("2d");
 
-  // 大きい ImageData をリサイズして描画
+  // ★ 重要 ★
+  // 画像元は ImageData ではなく imgElement（<img id="preview">）を使う
   ctx.drawImage(
-    imgElement,      // ← ここ重要！ImageData ではなく画像要素を使う
-    0, 0, imgWidth, imgHeight,
+    imgElement,
+    0, 0, imgElement.naturalWidth, imgElement.naturalHeight,
     0, 0, target, target
   );
 
   const resized = ctx.getImageData(0, 0, target, target);
 
-  // --- ② RGB → CHW float32 ---
+  // CHW float32
   const chw = new Float32Array(3 * target * target);
   let p = 0;
 
   for (let y = 0; y < target; y++) {
     for (let x = 0; x < target; x++) {
+      const idx = (y * target + x) * 4;
 
-      const index = (y * target + x) * 4;
-
-      const r = resized.data[index]     / 255;
-      const g = resized.data[index + 1] / 255;
-      const b = resized.data[index + 2] / 255;
+      const r = resized.data[idx]     / 255;
+      const g = resized.data[idx + 1] / 255;
+      const b = resized.data[idx + 2] / 255;
 
       chw[p] = r;
       chw[p + target * target] = g;
@@ -112,6 +111,19 @@ try {
       p++;
     }
   }
+
+  // 正しい Tensor shape
+  const tensor = new ort.Tensor("float32", chw, [1, 3, target, target]);
+
+  log("[RUN] 実行中...");
+  const outputs = await session.run({ images: tensor });
+
+  log("[RUN] 推論成功！");
+  log(JSON.stringify(outputs, null, 2));
+
+} catch (e) {
+  log("[ERROR] 推論失敗: " + e);
+}
   
   // --- ③ 4D Tensor (1,3,640,640) ---
   const tensor = new ort.Tensor("float32", chw, [1, 3, height, width]);
