@@ -34,7 +34,7 @@ function modelload(){
   try {
     if (!session) {
       log("[SESSION] セッション初期化開始...");
-      session = await ort.InferenceSession.create(modelPath);
+      session = ort.InferenceSession.create(modelPath);
       log("[SESSION] セッション初期化完了");
     }
   } catch (e) {
