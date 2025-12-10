@@ -75,10 +75,10 @@ try {
   log("[RUN] 入力テンソル作成中...");
   
   // プレビュー画像を取得
-  const imgElement = document.getElementById("preview");
-  if (!imgElement || !imgElement.src) {
-    throw new Error("プレビュー画像がロードされていません");
-  }
+  // const imgElement = document.getElementById("preview");
+  // if (!imgElement || !imgElement.src) {
+  //   throw new Error("プレビュー画像がロードされていません");
+  // }
   
   // 640x640 にリサイズする
   const target = 640;
