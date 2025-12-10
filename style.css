@@ -5,7 +5,7 @@ body {
 
 #logArea {
   background: #111;
-  overflow: auto;
+  overflow: scroll;
   color: #0f0;
   padding: 10px;
   height: 260px;
