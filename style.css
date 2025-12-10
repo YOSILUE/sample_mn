@@ -13,5 +13,9 @@ body {
   font-size: 12px;
   scrollbar-color: hotpink #c0c0c0;
   scrollbar-width: auto;
-  webkit-overflow-scrolling: touch;
+}
+
+#logArea::-webkit-scrollbar {
+width: 20px;
+height: 20px;
 }
