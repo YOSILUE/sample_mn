@@ -117,7 +117,7 @@ try {
   }
  
   // --- ③ 4D Tensor (1,3,640,640) ---
-  const tensor = new ort.Tensor("float32", chw, [1, 3, height, width]);
+  const tensor = new ort.Tensor("float32", chw, [1, 3, target, target]);
 
   log("[RUN] 実行中...");
 
