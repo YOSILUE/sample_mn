@@ -23,7 +23,7 @@ log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 //----------------------------------------------------
 // モデルロード
 //----------------------------------------------------
-const modelPath = "https://yosilue.github.io/sample_mn/model/best.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_op16.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // グローバル変数
