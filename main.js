@@ -122,6 +122,7 @@ try {
   log("[RUN] 実行中...");
 
   // 入力名 `images` で推論
+  log("[DEBUG] inputNames = " + JSON.stringify(session.inputNames));
   const outputs = await session.run({ images: tensor });
 
   log("[RUN] 推論成功！");
