@@ -28,7 +28,8 @@ log("[INIT] モデルパス = " + modelPath);
 let session = null;
 let inputImageData = null;
 
-window.addEventListener("load", function() {
+//window.addEventListener("load", function() {
+function modelload(){
    // ページの読み込みが完了した後で実行したい処理
    log("[INFO] ページの読み込み完了");
   try {
@@ -40,7 +41,7 @@ window.addEventListener("load", function() {
   } catch (e) {
       log("[ERROR] セッション初期化失敗: " + e);
   }
-});
+};
 
 //----------------------------------------------------
 // 画像プレビュー
