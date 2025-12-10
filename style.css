@@ -13,4 +13,5 @@ body {
   font-size: 12px;
   scrollbar-color: hotpink #c0c0c0;
   scrollbar-width: auto;
+  webkit-overflow-scrolling: touch;
 }
