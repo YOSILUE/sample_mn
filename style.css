@@ -15,7 +15,7 @@ body {
   scrollbar-width: auto;
 }
 
-#logArea::-webkit-scrollbar {
-width: 50px;
-height: 50px;
+#logArea::-webkit-scrollbar-thumb {
+border-radius: 50px;
+background: #1959A8;
 }
