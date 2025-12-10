@@ -73,11 +73,13 @@ try {
   }
 
   log("[RUN] 入力テンソル作成中...");
+  
   // プレビュー画像を取得
   const imgElement = document.getElementById("preview");
   if (!imgElement || !imgElement.src) {
     throw new Error("プレビュー画像がロードされていません");
   }
+  
   // 640x640 にリサイズする
   const target = 640;
 
@@ -125,9 +127,9 @@ try {
   log("[RUN] 推論成功！");
   log(JSON.stringify(outputs, null, 2));
 
-} catch (e) {
-  log("[ERROR] 推論失敗: " + e);
-}
+  } catch (e) {
+    log("[ERROR] 推論失敗: " + e);
+  }
   
   // --- ③ 4D Tensor (1,3,640,640) ---
   const tensor = new ort.Tensor("float32", chw, [1, 3, height, width]);
@@ -140,9 +142,9 @@ try {
   log("[RUN] 推論成功！");
   log(JSON.stringify(outputs, null, 2));
 
-} catch (e) {
-  log("[ERROR] 推論失敗: " + e);
-}
+  } catch (e) {
+    log("[ERROR] 推論失敗: " + e);
+  }
 };
 
 log("[INIT] main.js 完了");
