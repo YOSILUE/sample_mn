@@ -36,6 +36,7 @@ window.addEventListener("load", function() {
       log("[SESSION] セッション初期化開始...");
       session = ort.InferenceSession.create(modelPath);
       log("[SESSION] セッション初期化完了");
+      log("[SESSION] 結果：" + JSON.stringify({session}));
     }
   } catch (e) {
       log("[ERROR] セッション初期化失敗: " + e);
