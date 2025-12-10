@@ -5,11 +5,12 @@ body {
 
 #logArea {
   background: #111;
-  overflow: scroll;
   color: #0f0;
   padding: 10px;
   height: 260px;
   overflow-y: scroll;
   border: 1px solid #555;
   font-size: 12px;
+  scrollbar-color: hotpink blue;
+  scrollbar-width: auto;
 }
