@@ -11,4 +11,6 @@ body {
   overflow-y: scroll;
   border: 1px solid #555;
   font-size: 12px;
+  scrollbar-color: hotpink #c0c0c0;
+  scrollbar-width: auto;
 }

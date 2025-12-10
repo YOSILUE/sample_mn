@@ -9,24 +9,44 @@ function log(msg) {
 }
 
 //----------------------------------------------------
-// WASM ローダー設定
+// ORT 事前設定（WebGL → WASM の順にフォールバック）
 //----------------------------------------------------
 log("[INIT] ORT 設定開始...");
 
-ort.env.wasm.wasmPaths = "./onnx";
-ort.env.wasm.numThreads = 1;
+// WebGL を使える環境なら使う
+ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx/";
+ort.env.wasm.numThreads = 2;
+ort.env.debug = false;
 
 log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 
 //----------------------------------------------------
 // モデルロード
 //----------------------------------------------------
-const modelPath = "./model/best.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_03.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // グローバル変数
-let session = null;
-let inputImageData = null;
+let session = null;         // 推論セッション
+let inputImageData = null;  // 入力画像データ
+
+//----------------------------------------------------
+// ★ 起動直後にモデルをプリロード（高速化の要）
+//----------------------------------------------------
+(async () => {
+  try {
+    log("[PRELOAD] セッション事前読み込み開始…");
+
+    // WebGL を優先してロード
+    session = await ort.InferenceSession.create(modelPath, {
+      executionProviders: ["webgl", "wasm"],
+    });
+
+    log("[PRELOAD] セッション事前読み込み完了（WebGL/WASM）");
+  } catch (e) {
+    log("[PRELOAD] セッション事前読み込み失敗: " + e);
+  }
+})();
 
 //----------------------------------------------------
 // 画像プレビュー
@@ -39,7 +59,6 @@ document.getElementById("imageInput").onchange = (e) => {
   document.getElementById("preview").src = url;
   log("[IMAGE] プレビュー表示完了: " + file.name);
 
-  // 画像読み込み
   const img = new Image();
   img.onload = () => {
     const c = document.createElement("canvas");
@@ -66,17 +85,64 @@ document.getElementById("runBtn").onclick = async () => {
   }
 
   try {
+    //------------------------------------------------
+    // ★ セッションが事前ロード済みで即スタート
+    //------------------------------------------------
     if (!session) {
       log("[SESSION] セッション初期化開始...");
-      session = await ort.InferenceSession.create(modelPath);
+      session = await ort.InferenceSession.create(modelPath, {
+        executionProviders: ["webgl", "wasm"],
+      });
       log("[SESSION] セッション初期化完了");
     }
 
-    // YOLO 用の前処理は必要に応じて追加
+    //------------------------------------------------
+    // 画像を 640x640 にリサイズ
+    //------------------------------------------------
     log("[RUN] 入力テンソル作成中...");
-    const tensor = new ort.Tensor("float32", new Float32Array([0]), [1, 1]);
 
+    const imgElement = document.getElementById("preview");
+    if (!imgElement || !imgElement.src) {
+      throw new Error("プレビュー画像がロードされていません");
+    }
+
+    const target = 640;
+    const canvas = document.createElement("canvas");
+    canvas.width = target;
+    canvas.height = target;
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(
+      imgElement,
+      0, 0, imgElement.naturalWidth, imgElement.naturalHeight,
+      0, 0, target, target
+    );
+
+    const resized = ctx.getImageData(0, 0, target, target);
+
+    //------------------------------------------------
+    // CHW float32 変換
+    //------------------------------------------------
+    const chw = new Float32Array(3 * target * target);
+    let p = 0;
+    for (let y = 0; y < target; y++) {
+      for (let x = 0; x < target; x++) {
+        const idx = (y * target + x) * 4;
+        chw[p] = resized.data[idx] / 255;
+        chw[p + target * target] = resized.data[idx + 1] / 255;
+        chw[p + 2 * target * target] = resized.data[idx + 2] / 255;
+        p++;
+      }
+    }
+
+    const tensor = new ort.Tensor("float32", chw, [1, 3, target, target]);
+
+    //------------------------------------------------
+    // 推論実行
+    //------------------------------------------------
     log("[RUN] 実行中...");
+    log("[DEBUG] inputNames = " + JSON.stringify(session.inputNames));
+
     const outputs = await session.run({ images: tensor });
 
     log("[RUN] 推論成功！");
