@@ -7,9 +7,10 @@ body {
   background: #111;
   color: #0f0;
   padding: 10px;
-  height: 100px;
+  height: 260px;
   overflow-y: scroll;
   border: 1px solid #555;
   font-size: 12px;
-  scrollbar-color: hotpink blue;
+  scrollbar-color: hotpink #c0c0c0;
+  scrollbar-width: auto;
 }
