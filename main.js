@@ -13,20 +13,28 @@ function log(msg) {
 //----------------------------------------------------
 async function logModelFileSize(modelUrl) {
     try {
-        const response = await fetch(modelUrl, {
-            method: 'HEAD'
-        });
-
-        const size = response.headers.get("Content-Length");
+        // ---- HEAD を試す ----
+        let response = await fetch(modelUrl, { method: "HEAD" });
+        let size = response.headers.get("Content-Length");
 
         if (size) {
             const mb = (Number(size) / (1024 * 1024)).toFixed(2);
-            console.log(`[MODEL] ファイルサイズ: ${mb} MB (${size} bytes)`);
-        } else {
-            console.warn("[MODEL] Content-Length ヘッダが取得できませんでした");
+            log(`[MODEL] ファイルサイズ: ${mb} MB (${size} bytes)`);
+            return;
         }
+
+        log("[MODEL] HEAD ではサイズ取得できませんでした → GET に切り替えます");
+
+        // ---- GET にフォールバック ----
+        response = await fetch(modelUrl);
+        const buffer = await response.arrayBuffer();
+        size = buffer.byteLength;
+
+        const mb = (Number(size) / (1024 * 1024)).toFixed(2);
+        log(`[MODEL] GET取得サイズ: ${mb} MB (${size} bytes)`);
+
     } catch (e) {
-        console.error("[MODEL] ファイルサイズ取得エラー:", e);
+        log("[MODEL] サイズ取得エラー: " + e);
     }
 }
 
@@ -45,7 +53,7 @@ log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 //----------------------------------------------------
 // モデルロード
 //----------------------------------------------------
-const modelPath = "https://yosilue.github.io/sample_mn/model/best_05.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_06.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // グローバル変数
