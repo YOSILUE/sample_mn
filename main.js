@@ -9,6 +9,28 @@ function log(msg) {
 }
 
 //----------------------------------------------------
+// モデルファイルのサイズを事前に取得する関数
+//----------------------------------------------------
+async function logModelFileSize(modelUrl) {
+    try {
+        const response = await fetch(modelUrl, {
+            method: 'HEAD'
+        });
+
+        const size = response.headers.get("Content-Length");
+
+        if (size) {
+            const mb = (Number(size) / (1024 * 1024)).toFixed(2);
+            console.log(`[MODEL] ファイルサイズ: ${mb} MB (${size} bytes)`);
+        } else {
+            console.warn("[MODEL] Content-Length ヘッダが取得できませんでした");
+        }
+    } catch (e) {
+        console.error("[MODEL] ファイルサイズ取得エラー:", e);
+    }
+}
+
+//----------------------------------------------------
 // ORT 事前設定（WebGL → WASM の順にフォールバック）
 //----------------------------------------------------
 log("[INIT] ORT 設定開始...");
@@ -35,6 +57,9 @@ let inputImageData = null;  // 入力画像データ
 //----------------------------------------------------
 (async () => {
   try {
+    // モデルサイズをログ出力
+    logModelFileSize(modelPath);
+    
     log("[PRELOAD] セッション事前読み込み開始…");
 
     // WebGL を優先してロード
