@@ -8,7 +8,7 @@ function log(msg) {
   area.scrollTop = area.scrollHeight;
 }
 
-log("[INFO] APP ver 2025.12.13_0347");
+log("[INFO] APP ver 2025.12.13_0412");
 //----------------------------------------------------
 // ORT 事前設定（WebGL → WASM の順にフォールバック）
 //----------------------------------------------------
@@ -162,9 +162,9 @@ document.getElementById("runBtn").onclick = async () => {
     log("[RUN] 実行中...");
     log("[DEBUG] inputNames = " + JSON.stringify(session.inputNames));
 
-    let t0 = performance.now(); //計測開始
+    const t0 = performance.now(); //計測開始
     const outputs = await session.run({ images: tensor });
-    let t1 = performance.now(); //計測終了
+    const t1 = performance.now(); //計測終了
 
     //------------------------------------------------
     // 結果表示
@@ -172,16 +172,17 @@ document.getElementById("runBtn").onclick = async () => {
     log("[RUN] 推論成功！");
     log(JSON.stringify(outputs, null, 2));
 
-  } catch (e) {
-    log("[ERROR] 推論失敗: " + e);
-  }
-  //------------------------------------------------
-  // ★ FPS などをログ出力
-  //------------------------------------------------
-  const elapsed = t1 - t0; // ms
-  const fps = 1000 / elapsed;
-  log(`[PERF] 推論時間: ${elapsed.toFixed(2)} ms`);
-  log(`[PERF] FPS: ${fps.toFixed(2)}`);
+    //------------------------------------------------
+    // ★ FPS などをログ出力
+    //------------------------------------------------
+    const elapsed = t1 - t0; // ms
+    const fps = 1000 / elapsed;
+    log(`[PERF] 推論時間: ${elapsed.toFixed(2)} ms`);
+    log(`[PERF] FPS: ${fps.toFixed(2)}`);
+    
+    } catch (e) {
+      log("[ERROR] 推論失敗: " + e);
+    }
 };
 
 log("[INIT] main.js 完了");
