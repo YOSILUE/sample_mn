@@ -23,7 +23,7 @@ log("[INIT] Execution = WASM only");
 //----------------------------------------------------
 // モデルロード
 //----------------------------------------------------
-const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o12.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o18.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // グローバル変数
