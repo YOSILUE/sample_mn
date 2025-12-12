@@ -38,7 +38,7 @@ async function logModelFileSize(modelUrl) {
     }
 }
 
-log("[INFO] APP ver 2025.12.13_0212");
+log("[INFO] APP ver 2025.12.13_0236");
 //----------------------------------------------------
 // ORT 事前設定（WebGL → WASM の順にフォールバック）
 //----------------------------------------------------
@@ -54,7 +54,7 @@ log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 //----------------------------------------------------
 // モデルロード
 //----------------------------------------------------
-const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o17.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o12.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // グローバル変数
