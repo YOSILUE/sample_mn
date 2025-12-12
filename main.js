@@ -162,9 +162,9 @@ document.getElementById("runBtn").onclick = async () => {
     log("[RUN] 実行中...");
     log("[DEBUG] inputNames = " + JSON.stringify(session.inputNames));
 
-    const t0 = performance.now(); //計測開始
+    let t0 = performance.now(); //計測開始
     const outputs = await session.run({ images: tensor });
-    const t1 = performance.now(); //計測終了
+    let t1 = performance.now(); //計測終了
 
     //------------------------------------------------
     // 結果表示
