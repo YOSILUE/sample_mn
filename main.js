@@ -8,6 +8,28 @@ function log(msg) {
   area.scrollTop = area.scrollHeight;
 }
 
+log("[INFO] APP ver 2025.12.13_0236");
+//----------------------------------------------------
+// ORT 事前設定（WebGL → WASM の順にフォールバック）
+//----------------------------------------------------
+log("[INIT] ORT 設定開始...");
+ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx/";
+ort.env.wasm.numThreads = 2;
+ort.env.wasm.simd = true;         // SIMD ON（高速化）
+ort.env.debug = false;
+
+log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
+log("[INIT] Execution = WASM only");
+//----------------------------------------------------
+// モデルロード
+//----------------------------------------------------
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o12.onnx";
+log("[INIT] モデルパス = " + modelPath);
+
+// グローバル変数
+let session = null;         // 推論セッション
+let inputImageData = null;  // 入力画像データ
+
 //----------------------------------------------------
 // モデルファイルのサイズを事前に取得する関数
 //----------------------------------------------------
@@ -22,61 +44,27 @@ async function logModelFileSize(modelUrl) {
             log(`[MODEL] ファイルサイズ: ${mb} MB (${size} bytes)`);
             return;
         }
-
-        log("[MODEL] HEAD ではサイズ取得できませんでした → GET に切り替えます");
-
-        // ---- GET にフォールバック ----
-        response = await fetch(modelUrl);
-        const buffer = await response.arrayBuffer();
-        size = buffer.byteLength;
-
-        const mb = (Number(size) / (1024 * 1024)).toFixed(2);
-        log(`[MODEL] GET取得サイズ: ${mb} MB (${size} bytes)`);
-
     } catch (e) {
         log("[MODEL] サイズ取得エラー: " + e);
     }
 }
 
-log("[INFO] APP ver 2025.12.13_0236");
 //----------------------------------------------------
-// ORT 事前設定（WebGL → WASM の順にフォールバック）
-//----------------------------------------------------
-log("[INIT] ORT 設定開始...");
-
-// WebGL を使える環境なら使う
-ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx/";
-ort.env.wasm.numThreads = 2;
-ort.env.debug = false;
-
-log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
-
-//----------------------------------------------------
-// モデルロード
-//----------------------------------------------------
-const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o12.onnx";
-log("[INIT] モデルパス = " + modelPath);
-
-// グローバル変数
-let session = null;         // 推論セッション
-let inputImageData = null;  // 入力画像データ
-
-//----------------------------------------------------
-// ★ 起動直後にモデルをプリロード（高速化の要）
+// ★ 起動直後にモデルをプリロード（高速化）
 //----------------------------------------------------
 (async () => {
   try {
     // モデルサイズをログ出力
-    logModelFileSize(modelPath);
-    
+    logModelFileSize(modelPath);   
     log("[PRELOAD] セッション事前読み込み開始…");
 
-    // WebGL を優先してロード
+    // wasm をロード
     session = await ort.InferenceSession.create(modelPath, {
-      executionProviders: ["webgl", "wasm"],
+      //executionProviders: ["webgl", "wasm"]
+      executionProviders: ["wasm"]
     });
 
-    log("[PRELOAD] セッション事前読み込み完了（WebGL/WASM）");
+    log("[PRELOAD] セッション事前読み込み完了（WASM）");
   } catch (e) {
     log("[PRELOAD] セッション事前読み込み失敗: " + e);
   }
@@ -119,15 +107,12 @@ document.getElementById("runBtn").onclick = async () => {
   }
 
   try {
-    //------------------------------------------------
-    // ★ セッションが事前ロード済みで即スタート
-    //------------------------------------------------
     if (!session) {
-      log("[SESSION] セッション初期化開始...");
+      log("[SESSION] セッション再ロード開始（WASM）...");
       session = await ort.InferenceSession.create(modelPath, {
-        executionProviders: ["webgl", "wasm"],
+        executionProviders: ["wasm"]
       });
-      log("[SESSION] セッション初期化完了");
+      log("[SESSION] セッション再ロード完了");
     }
 
     //------------------------------------------------
