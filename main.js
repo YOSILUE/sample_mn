@@ -167,14 +167,6 @@ document.getElementById("runBtn").onclick = async () => {
     const t1 = performance.now(); //計測終了
 
     //------------------------------------------------
-    // ★ FPS などをログ出力
-    //------------------------------------------------
-    const elapsed = t1 - t0; // ms
-    const fps = 1000 / elapsed;
-    log(`[PERF] 推論時間: ${elapsed.toFixed(2)} ms`);
-    log(`[PERF] FPS: ${fps.toFixed(2)}`);
-
-    //------------------------------------------------
     // 結果表示
     //-----------------------------------------------
     log("[RUN] 推論成功！");
@@ -183,6 +175,13 @@ document.getElementById("runBtn").onclick = async () => {
   } catch (e) {
     log("[ERROR] 推論失敗: " + e);
   }
+  //------------------------------------------------
+  // ★ FPS などをログ出力
+  //------------------------------------------------
+  const elapsed = t1 - t0; // ms
+  const fps = 1000 / elapsed;
+  log(`[PERF] 推論時間: ${elapsed.toFixed(2)} ms`);
+  log(`[PERF] FPS: ${fps.toFixed(2)}`);
 };
 
 log("[INIT] main.js 完了");
