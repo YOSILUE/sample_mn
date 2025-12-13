@@ -23,23 +23,25 @@ function boxIoU(a, b) {
 //----------------------------------------------------
 // NMS（Non-Maximum Suppression）=非最大抑制、検出精度の調整
 //----------------------------------------------------
-function nonMaxSuppression(boxes, iouThreshold = 0.45) {
-  // confidence 降順
+function nonMaxSuppression(boxes, iouThreshold) {
   boxes.sort((a, b) => b.conf - a.conf);
 
   const selected = [];
+  let suppressed = 0;
 
   for (const box of boxes) {
     let keep = true;
-
     for (const sel of selected) {
       if (boxIoU(box, sel) > iouThreshold) {
         keep = false;
+        suppressed++;
         break;
       }
     }
     if (keep) selected.push(box);
   }
+
+  log(`[NMS] suppressed by IoU = ${suppressed}`);
   return selected;
 }
 
@@ -55,29 +57,47 @@ export function postprocessYOLO(
   const data = out.cpuData;
   const [_, C, N] = out.dims; // [1,5,8400]
 
-  const boxes = [];
+  log(`[POST] dims = ${out.dims.join(",")}`);
+
+  let maxConf = 0;
+  let rawCount = 0;
+
+  const candidates = [];
 
   for (let i = 0; i < N; i++) {
+    const conf = data[4 * N + i];
+    if (conf > maxConf) maxConf = conf;
+
+    if (conf < confThreshold) continue;
+
+    rawCount++;
+
     const cx = data[0 * N + i];
     const cy = data[1 * N + i];
     const w  = data[2 * N + i];
     const h  = data[3 * N + i];
-    const conf = data[4 * N + i];
 
-    if (conf < confThreshold) continue;
-
-    const x1 = cx - w / 2;
-    const y1 = cy - h / 2;
-    const x2 = cx + w / 2;
-    const y2 = cy + h / 2;
-
-    boxes.push({
-      x1, y1, x2, y2,
+    candidates.push({
+      x1: cx - w / 2,
+      y1: cy - h / 2,
+      x2: cx + w / 2,
+      y2: cy + h / 2,
       cx, cy, w, h,
       conf
     });
   }
 
-  // NMS
-  return nonMaxSuppression(boxes, iouThreshold);
+  log(`[POST] max conf = ${maxConf.toFixed(4)}`);
+  log(`[POST] confThreshold = ${confThreshold}`);
+  log(`[POST] after conf filter = ${rawCount}`);
+
+  if (candidates.length === 0) {
+    log("[POST] No boxes passed confidence filter");
+    return [];
+  }
+
+  const finalBoxes = nonMaxSuppression(candidates, iouThreshold);
+  log(`[POST] after NMS = ${finalBoxes.length}`);
+
+  return finalBoxes;
 }
