@@ -4,7 +4,7 @@ import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
 
 //アプリ更新日を出力
-log("[INFO] App update 2025.12.14_0155");
+log("[INFO] App update 2025.12.14_0200");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -128,7 +128,7 @@ document.getElementById("runBtn").onclick = async () => {
     console.log(boxes);
 
     // ★ 描画
-    const imgElement = document.getElementById("preview");
+    //const imgElement = document.getElementById("preview");
     drawBoxes(boxes, imgElement);
     
     const elapsed = t1 - t0; // ms
