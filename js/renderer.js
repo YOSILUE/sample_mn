@@ -1,41 +1,52 @@
 //----------------------------------------------------
-// 検出結果描画（Canvas Overlay）
+// 検出結果描画（Canvas Overlay / Responsive対応）
 //----------------------------------------------------
 export function drawBoxes(boxes, imgElement) {
   const canvas = document.getElementById("overlay");
   const ctx = canvas.getContext("2d");
 
-  // canvas サイズを画像に合わせる
-  const w = imgElement.naturalWidth;
-  const h = imgElement.naturalHeight;
+  // ---- 元画像サイズ（推論座標系） ----
+  const imgW = imgElement.naturalWidth;
+  const imgH = imgElement.naturalHeight;
 
-  canvas.width = w;
-  canvas.height = h;
+  // ---- 表示サイズ（CSS反映後） ----
+  const rect = imgElement.getBoundingClientRect();
+  const dispW = rect.width;
+  const dispH = rect.height;
 
-  // 表示サイズを img に合わせる（CSS的に）
-  canvas.style.width = imgElement.width + "px";
-  canvas.style.height = imgElement.height + "px";
+  // ---- canvas 内部解像度（重要）----
+  canvas.width = imgW;
+  canvas.height = imgH;
 
-  // クリア
-  ctx.clearRect(0, 0, w, h);
+  // ---- canvas 表示サイズを画像に完全追従 ----
+  canvas.style.width = dispW + "px";
+  canvas.style.height = dispH + "px";
 
-  // 描画スタイル
+  // ---- 画像の上に重ねる ----
+  canvas.style.position = "absolute";
+  canvas.style.left = "0";
+  canvas.style.top = "0";
+  canvas.style.pointerEvents = "none"; // 操作を邪魔しない
+
+  // ---- クリア ----
+  ctx.clearRect(0, 0, imgW, imgH);
+
+  // ---- 描画スタイル ----
   ctx.lineWidth = 2;
   ctx.strokeStyle = "red";
   ctx.fillStyle = "red";
-  ctx.font = "16px sans-serif";
+  ctx.font = "18px sans-serif";
 
-  boxes.forEach((b) => {
+  // ---- 描画 ----
+  boxes.forEach((b, i) => {
     const { x1, y1, x2, y2, score } = b;
 
-    const bw = x2 - x1;
-    const bh = y2 - y1;
+    const w = x2 - x1;
+    const h = y2 - y1;
 
-    // bbox
-    ctx.strokeRect(x1, y1, bw, bh);
+    ctx.strokeRect(x1, y1, w, h);
 
-    // label
     const label = score.toFixed(2);
-    ctx.fillText(label, x1, Math.max(10, y1 - 4));
+    ctx.fillText(label, x1, Math.max(16, y1 - 4));
   });
 }
