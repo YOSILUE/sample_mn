@@ -72,7 +72,7 @@ export function postprocessYOLO(outputs) {
   const data = output.cpuData;
   const [batch, channels, num] = output.dims;
 
-  console.log("[POST] dims =", output.dims);
+  log("[POST] dims =" + output.dims);
 
   const boxes = [];
   const CONF_TH = 0.01; // ← まずは超低く
@@ -99,9 +99,9 @@ export function postprocessYOLO(outputs) {
     });
   }
 
-  console.log("[POST] raw boxes =", boxes.length);
+  log("[POST] raw boxes =" + boxes.length);
   if (boxes.length > 0) {
-    console.log("[POST] max conf =", Math.max(...boxes.map(b => b.score)));
+    log("[POST] max conf =" + Math.max(...boxes.map(b => b.score)));
   }
 
   return boxes;  
