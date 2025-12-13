@@ -2,7 +2,7 @@
 import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
 import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 
-log("[INFO] App ver 2025.12.13_1924");
+log("[INFO] App ver 2025.12.13_2024");
 
 // ORT 設定
 log("[INIT] ORT 設定開始...");
@@ -125,9 +125,9 @@ document.getElementById("runBtn").onclick = async () => {
     log(`[PERF] FPS: ${fps.toFixed(2)}`);
   
     console.log(boxes);
-    } catch (e) {
+  } catch (e) {
       log("[ERROR] 推論失敗: " + e);
-    }
+  }
 };
 
 log("[INIT] main.js 完了");
