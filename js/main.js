@@ -1,6 +1,6 @@
 // js/main.js
-import { log } from "./logger.js";
-import { postprocessYOLO } from "./nms.js";
+import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
+import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 
 log("[INFO] App ver 2025.12.13_1924");
 
