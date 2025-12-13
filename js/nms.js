@@ -66,6 +66,43 @@ export function nms(boxes, iouThreshold = 0.5) {
 // YOLO 後処理まとめ
 //----------------------------------------------------
 export function postprocessYOLO(outputs) {
-  const raw = parseYOLOOutput(outputs.output0, 0.25);
-  return nms(raw, 0.5);
+  //const raw = parseYOLOOutput(outputs.output0, 0.25);
+  //return nms(raw, 0.5);
+  const output = outputs.output0;
+  const data = output.cpuData;
+  const [batch, channels, num] = output.dims;
+
+  console.log("[POST] dims =", output.dims);
+
+  const boxes = [];
+  const CONF_TH = 0.01; // ← まずは超低く
+
+  for (let i = 0; i < num; i++) {
+    const cx = data[0 * num + i];
+    const cy = data[1 * num + i];
+    const w  = data[2 * num + i];
+    const h  = data[3 * num + i];
+    const conf = data[4 * num + i];
+
+    if (conf < CONF_TH) continue;
+
+    // cx,cy,w,h は 0–1 正規化
+    const x1 = cx - w / 2;
+    const y1 = cy - h / 2;
+    const x2 = cx + w / 2;
+    const y2 = cy + h / 2;
+
+    boxes.push({
+      x1, y1, x2, y2,
+      score: conf,
+      classId: 0
+    });
+  }
+
+  console.log("[POST] raw boxes =", boxes.length);
+  if (boxes.length > 0) {
+    console.log("[POST] max conf =", Math.max(...boxes.map(b => b.score)));
+  }
+
+  return boxes;  
 }
