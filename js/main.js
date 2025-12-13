@@ -46,11 +46,72 @@ document.getElementById("imageInput").onchange = (e) => {
   img.src = url;
 };
 
+//----------------------------------------------------
 // 推論
+//----------------------------------------------------
 document.getElementById("runBtn").onclick = async () => {
-  if (!session) return;
+  log("[RUN] 推論開始...");
 
-  const tensor = /* 既存の入力テンソル生成 */;
+  if (!inputImageData) {
+    log("[ERROR] 画像が読み込まれていません。");
+    return;
+  }
+
+  try {
+    if (!session) {
+      log("[SESSION] セッション再ロード開始（WASM）...");
+      session = await ort.InferenceSession.create(modelPath, {
+        executionProviders: ["wasm"]
+      });
+      log("[SESSION] セッション再ロード完了");
+    }
+
+    //------------------------------------------------
+    // 画像を 640x640 にリサイズ
+    //------------------------------------------------
+    log("[RUN] 入力テンソル作成中...");
+
+    const imgElement = document.getElementById("preview");
+    if (!imgElement || !imgElement.src) {
+      throw new Error("プレビュー画像がロードされていません");
+    }
+
+    const target = 640;
+    const canvas = document.createElement("canvas");
+    canvas.width = target;
+    canvas.height = target;
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(
+      imgElement,
+      0, 0, imgElement.naturalWidth, imgElement.naturalHeight,
+      0, 0, target, target
+    );
+
+    const resized = ctx.getImageData(0, 0, target, target);
+
+    //------------------------------------------------
+    // CHW float32 変換
+    //------------------------------------------------
+    const chw = new Float32Array(3 * target * target);
+    let p = 0;
+    for (let y = 0; y < target; y++) {
+      for (let x = 0; x < target; x++) {
+        const idx = (y * target + x) * 4;
+        chw[p] = resized.data[idx] / 255;
+        chw[p + target * target] = resized.data[idx + 1] / 255;
+        chw[p + 2 * target * target] = resized.data[idx + 2] / 255;
+        p++;
+      }
+    }
+
+    const tensor = new ort.Tensor("float32", chw, [1, 3, target, target]);
+
+    //------------------------------------------------
+    // 推論実行
+    //------------------------------------------------
+    log("[RUN] 推論実行中...");
+    log("[DEBUG] inputNames = " + JSON.stringify(session.inputNames));
   const t0 = performance.now();
   const outputs = await session.run({ images: tensor });
   const t1 = performance.now();
