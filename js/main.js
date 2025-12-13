@@ -1,6 +1,7 @@
 // js/main.js
 import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
 import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
+import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
 
 //アプリ更新日を出力
 log("[INFO] App update 2025.12.14_0037");
@@ -125,6 +126,10 @@ document.getElementById("runBtn").onclick = async () => {
     const boxes = postprocessYOLO(outputs, 0.05, 0.45);
     log(`[POST] final boxes=${boxes.length}`);
     console.log(boxes);
+
+    // ★ 描画
+    const imgElement = document.getElementById("preview");
+    drawBoxes(boxes, imgElement);
     
     const elapsed = t1 - t0; // ms
     const fps = 1000 / elapsed;
