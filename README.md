@@ -1,42 +1,10 @@
-# sample_mn
-## sample_mn
-Sample Data
-これは **太字** です。
-これは __太字__ です。
-これは *斜体* です。
-これは _斜体_ です。
-これは ~~訂正線~~です。
-これは<u>下線</u>です。
-[リンク文字列](https://notepm.jp)
-> これは引用です。
-> これは引用です。これは引用です。
-点で囲まれた文字`は「インラインコード」になります。
-点3つで囲まれた文字はコードブロックになります。
-これは `code` です
-```
-これはコードブロックです
-void hello()
-{
-console.log("Hello World!");
-}
-```
-これは<span style="color: red; ">赤文字</span>です
-
-- [ ] これからやるタスク
-    - [ ] Tabキーでインデント（字下げ）
-- [x] 完了したタスク
-
-- リスト１
-- リスト２
-    - Tabキーでインデント（字下げ）
-* リスト１
-* リスト２
-    * Tabキーでインデント（字下げ）
-+ リスト1
-+ リスト2
-    + Tabキーでインデント（字下げ
-1. 番号リストA
-1. 番号リストB
-    1. 番号B-1【Tabキーでインデント（字下げ）】
-    1. 番号B-2【Tabキーでインデント（字下げ）】
-1. 番号リストC
+# バージョン対応表
+| YOLO    | Opset | ORT 実行環境      | 結果     | 状態 / エラー内容                                  | 備考                            |
+| ------- | ----- | ------------     | -----     | -------------------------------------------------- | ---------------------------     |
+| YOLOv8n | 12    | WebGL + WASM     | ❌ 失敗   | `resize (packed) does not support mode: 'nearest'` | WebGL backend の Resize 制限    |
+| YOLOv8n | 17    | WebGL + WASM     | ❌ 失敗   | `cannot resolve operator 'Split'`                  | ORT-Web が opset17 Split 未対応 |
+| YOLOv8n | 18    | WebGL + WASM     | ❌ 失敗   | WebGL 非対応オペレータ                             | Split / Resize 系               |
+| YOLOv8n | 18    | WebGL only       | ❌ 失敗   | 同上                                               | 現状不可                        |
+| YOLOv8n | 12    | WASM only        | ✅ 成功   | 推論成功（数値出力あり）                           | 現在の安定構成                  |
+| YOLOv8n | 17    | WASM only        | ❌ 未確認 | （WebGL失敗時点で中断）                            | ※理論上は可能性あり            |
+| YOLOv8n | 18    | WASM only        | ✅ 成功   | 推論成功（output0: [1,5,8400]）                    | 後処理実装可能                  |
