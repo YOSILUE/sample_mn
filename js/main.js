@@ -2,6 +2,12 @@
 import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
 import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 
+//----------------------------------------------------
+// グローバル変数
+//----------------------------------------------------
+let inputImageData = null;
+let session = null;
+
 log("[INFO] App ver 2025.12.13_2024");
 
 // ORT 設定
@@ -12,7 +18,6 @@ ort.env.wasm.numThreads = 2;
 
 const modelPath = "https://yosilue.github.io/sample_mn/model/best_y8_o18.onnx";
 log("[INIT] モデルパス = " + modelPath);
-let session = null;
 
 // 事前ロード
 (async () => {
