@@ -3,7 +3,7 @@ import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
 import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 
 //アプリ更新日を出力
-log("[INFO] App update 2025.12.14_0020");
+log("[INFO] App update 2025.12.14_0037");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -122,7 +122,7 @@ document.getElementById("runBtn").onclick = async () => {
     const outputs = await session.run({ images: tensor });
     const t1 = performance.now();
   
-    const boxes = postprocessYOLO(outputs);
+    const boxes = postprocessYOLO(outputs, 0.05, 0.45);
     log(`[POST] final boxes=${boxes.length}`);
     console.log(boxes);
     
