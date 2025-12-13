@@ -55,10 +55,13 @@ document.getElementById("runBtn").onclick = async () => {
   const outputs = await session.run({ images: tensor });
   const t1 = performance.now();
 
-  log(`[PERF] inference ${(t1 - t0).toFixed(2)} ms`);
-
   const boxes = postprocessYOLO(outputs);
   log(`[POST] boxes=${boxes.length}`);
+
+  const elapsed = t1 - t0; // ms
+  const fps = 1000 / elapsed;
+  log(`[PERF] 推論時間: ${elapsed.toFixed(2)} ms`);
+  log(`[PERF] FPS: ${fps.toFixed(2)}`);
 
   console.log(boxes);
 };
