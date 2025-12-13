@@ -1,4 +1,5 @@
-# バージョン対応表(モデルVer,OpsetVer,CPU処理・GPU処理の対応表)
+# バージョン対応表
+## モデルVer + OpsetVer = CPU処理・GPU処理の対応
 | YOLO    | Opset | ORT 実行環境      | 結果     | 状態 / エラー内容                                  | 備考                            |
 | ------- | ----- | ------------     | -----     | -------------------------------------------------- | ---------------------------     |
 | YOLOv8n | 12    | WebGL + WASM     | ❌ 失敗   | `resize (packed) does not support mode: 'nearest'` | WebGL backend の Resize 制限    |
