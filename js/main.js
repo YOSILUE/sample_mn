@@ -8,7 +8,7 @@ import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 let inputImageData = null;
 let session = null;
 
-log("[INFO] App ver 2025.12.13_2328");
+log("[INFO] App ver 2025.12.13_2339");
 
 // ORT 設定
 log("[INIT] ORT 設定開始...");
