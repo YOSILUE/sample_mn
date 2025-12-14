@@ -1,3 +1,6 @@
+//共通ライブラリ インポート
+import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
+
 //----------------------------------------------------
 // 検出結果描画（Canvas Overlay / Responsive対応）
 //----------------------------------------------------
