@@ -47,7 +47,7 @@ export function drawBoxes(boxes, imgElement) {
     const w = x2 - x1;
     const h = y2 - y1;
 
-    log("[DEBUG] x1= " + x1 + ", y1=" + y1 + ", w=" + w + ", h=" + h);
+    log("[DEBUG] x1= " + x1 + ", y1= " + y1 + ", w= " + w + ", h= " + h);
     ctx.strokeRect(x1, y1, w, h);
 
     log("[DEBUG] score= " + JSON.stringify(score));
