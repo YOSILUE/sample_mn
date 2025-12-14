@@ -3,7 +3,7 @@ body {
   padding: 20px;
 }
 
-#preview, #overlay {
+#preview {
   max-width: 100%; /*この記述で画面幅の100%の幅で画像を表示する*/
   height: auto; /*高さはautoで画像の最適化表示*/
 }
