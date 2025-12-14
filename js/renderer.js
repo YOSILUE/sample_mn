@@ -16,18 +16,17 @@ export function drawBoxes(boxes, imgElement) {
   const rect = imgElement.getBoundingClientRect();
   const dispW = rect.width;
   const dispH = rect.height;
-
-  // ---- 倍率計算 ---- 
-  //const max = Math.max(dispW, dispH);
-  //const scale = 640 / max;
+  log(`[DEBUG] dispW=${dispW}, dispH=${dispH}`);
 
   // ---- canvas 内部解像度（重要）----
   canvas.width = imgW;
   canvas.height = imgH;
+  log(`[DEBUG] canvas.width=${canvas.width}, canvas.height=${canvas.height}`);
 
   // ---- canvas 表示サイズを画像に完全追従 ----
   canvas.style.width = dispW + "px";
   canvas.style.height = dispH + "px";
+  log(`[DEBUG] canvas.style.width=${canvas.style.width}, canvas.style.height=${canvas.style.height}`);
 
   // ---- 画像の上に重ねる ----
   canvas.style.position = "absolute";
@@ -52,14 +51,7 @@ export function drawBoxes(boxes, imgElement) {
     const h = y2 - y1;   
     log(`[DEBUG] x1=${x1}, y1=${y1}, w=${w}, h=${h}, score=${score}`);
     ctx.strokeRect(x1, y1, w, h);
-    
-    //const bx = x1 / scale;
-    //const by = y1 / scale;
-    //const bw = (x2 - x1) / scale;
-    //const bh = (y2 - y1) / scale;
-    //log(`[DEBUG] bx=${bx}, by=${by}, bw=${bw}, bh=${bh}, score=${score}`);
-    //ctx.strokeRect(bx, by, bw, bh);
-    
+
     const label = (typeof score === "number") ? score : 0;
   　ctx.fillText(label.toFixed(2), x1, Math.max(16, y1 - 4));
   });
