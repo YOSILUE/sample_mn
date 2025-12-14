@@ -14,19 +14,21 @@ export function drawBoxes(boxes, imgElement) {
 
   // ---- 表示サイズ（CSS反映後） ----
   const rect = imgElement.getBoundingClientRect();
-  const dispW = rect.width;
-  const dispH = rect.height;
-  log(`[DEBUG] dispW=${dispW}, dispH=${dispH}`);
+  //const dispW = rect.width;
+  //const dispH = rect.height;
+  const dispW = imgElement.width;
+  const dispH = imgElement.height;
+  log(`[RENDERER] dispW=${dispW}, dispH=${dispH}`);
 
   // ---- canvas 内部解像度（重要）----
   canvas.width = imgW;
   canvas.height = imgH;
-  log(`[DEBUG] canvas.width=${canvas.width}, canvas.height=${canvas.height}`);
+  log(`[RENDERER] canvas.width=${canvas.width}, canvas.height=${canvas.height}`);
 
   // ---- canvas 表示サイズを画像に完全追従 ----
   canvas.style.width = dispW + "px";
   canvas.style.height = dispH + "px";
-  log(`[DEBUG] canvas.style.width=${canvas.style.width}, canvas.style.height=${canvas.style.height}`);
+  log(`[RENDERER] canvas.style.width=${canvas.style.width}, canvas.style.height=${canvas.style.height}`);
 
   // ---- 画像の上に重ねる ----
   canvas.style.position = "absolute";
