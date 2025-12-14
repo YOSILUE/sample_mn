@@ -18,8 +18,8 @@ export function drawBoxes(boxes, imgElement) {
   const dispH = rect.height;
 
   // ---- 倍率計算 ---- 
-  const max = Math.max(dispW, dispH);
-  const scale = 640 / max;
+  //const max = Math.max(dispW, dispH);
+  //const scale = 640 / max;
 
   // ---- canvas 内部解像度（重要）----
   canvas.width = imgW;
@@ -48,17 +48,17 @@ export function drawBoxes(boxes, imgElement) {
   boxes.forEach((b, i) => {
     const { x1, y1, x2, y2, score } = b;
 
-    //const w = x2 - x1;
-    //const h = y2 - y1;   
-    //log(`[DEBUG] x1=${x1}, y1=${y1}, w=${w}, h=${h}, score=${score}`);
-    //ctx.strokeRect(x1, y1, w, h);
+    const w = x2 - x1;
+    const h = y2 - y1;   
+    log(`[DEBUG] x1=${x1}, y1=${y1}, w=${w}, h=${h}, score=${score}`);
+    ctx.strokeRect(x1, y1, w, h);
     
-    const bx = x1 / scale;
-    const by = y1 / scale;
-    const bw = (x2 - x1) / scale;
-    const bh = (y2 - y1) / scale;
+    //const bx = x1 / scale;
+    //const by = y1 / scale;
+    //const bw = (x2 - x1) / scale;
+    //const bh = (y2 - y1) / scale;
     //log(`[DEBUG] bx=${bx}, by=${by}, bw=${bw}, bh=${bh}, score=${score}`);
-    ctx.strokeRect(bx, by, bw, bh);
+    //ctx.strokeRect(bx, by, bw, bh);
     
     const label = (typeof score === "number") ? score : 0;
   　ctx.fillText(label.toFixed(2), x1, Math.max(16, y1 - 4));
