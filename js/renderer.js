@@ -14,10 +14,8 @@ export function drawBoxes(boxes, imgElement) {
 
   // ---- 表示サイズ（CSS反映後） ----
   const rect = imgElement.getBoundingClientRect();
-  //const dispW = rect.width;
-  //const dispH = rect.height;
-  const dispW = imgElement.width;
-  const dispH = imgElement.height;
+  const dispW = rect.width;
+  const dispH = rect.height;
   log(`[RENDERER] dispW=${dispW}, dispH=${dispH}`);
 
   // ---- canvas 内部解像度（重要）----
