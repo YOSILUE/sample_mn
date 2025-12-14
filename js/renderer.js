@@ -46,6 +46,8 @@ export function drawBoxes(boxes, imgElement) {
 
     ctx.strokeRect(x1, y1, w, h);
 
+    log("[DEBUG] score= " + JSON.stringify(score));
+
     const label = score.toFixed(2);
     ctx.fillText(label, x1, Math.max(16, y1 - 4));
   });
