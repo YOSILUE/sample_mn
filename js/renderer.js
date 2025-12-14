@@ -12,6 +12,10 @@ export function drawBoxes(boxes, imgElement) {
   const imgW = imgElement.naturalWidth;
   const imgH = imgElement.naturalHeight;
 
+  // ---- スケール変換用 ----
+  const sx = imgW / 640;
+  const sy = imgH / 640;
+
   // ---- 表示サイズ（CSS反映後） ----
   const rect = imgElement.getBoundingClientRect();
   const dispW = rect.width;
@@ -21,12 +25,10 @@ export function drawBoxes(boxes, imgElement) {
   // ---- canvas 内部解像度（重要）----
   canvas.width = imgW;
   canvas.height = imgH;
-  log(`[RENDERER] canvas.width=${canvas.width}, canvas.height=${canvas.height}`);
 
   // ---- canvas 表示サイズを画像に完全追従 ----
   canvas.style.width = dispW + "px";
   canvas.style.height = dispH + "px";
-  log(`[RENDERER] canvas.style.width=${canvas.style.width}, canvas.style.height=${canvas.style.height}`);
 
   // ---- 画像の上に重ねる ----
   canvas.style.position = "absolute";
@@ -47,12 +49,14 @@ export function drawBoxes(boxes, imgElement) {
   boxes.forEach((b, i) => {
     const { x1, y1, x2, y2, score } = b;
 
-    const w = x2 - x1;
-    const h = y2 - y1;   
-    log(`[DEBUG] x1=${x1}, y1=${y1}, w=${w}, h=${h}, score=${score}`);
-    ctx.strokeRect(x1, y1, w, h);
+    // 推論時のアクセプト比640 → 元画像スケール変換
+    const rx = x1 * sx;
+    const ry = y1 * sy;
+    const rw = (x2 - x1) * sx;
+    const rh = (y2 - y1) * sy;
+    ctx.strokeRect(rx, ry, rw, rh);
 
     const label = (typeof score === "number") ? score : 0;
-  　ctx.fillText(label.toFixed(2), x1, Math.max(16, y1 - 4));
+  　ctx.fillText(label.toFixed(2), rx, Math.max(16, y1 - 4));
   });
 }
