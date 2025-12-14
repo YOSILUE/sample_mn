@@ -47,12 +47,10 @@ export function drawBoxes(boxes, imgElement) {
     const w = x2 - x1;
     const h = y2 - y1;
 
-    log("[DEBUG] x1= " + x1 + ", y1= " + y1 + ", w= " + w + ", h= " + h);
+    log(`[DEBUG] x1=${x1}, y1=${y1}, w=${w}, h=${h}, score=${score}`);
     ctx.strokeRect(x1, y1, w, h);
 
-    log("[DEBUG] score= " + JSON.stringify(score));
-    const label = score.toFixed(2);
-    
-    ctx.fillText(label, x1, Math.max(16, y1 - 4));
+    const label = (typeof score === "number") ? score : 0;
+  　ctx.fillText(label.toFixed(2), x1, Math.max(16, y1 - 4));
   });
 }
