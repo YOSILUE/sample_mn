@@ -49,7 +49,7 @@ export function drawBoxes(boxes, imgElement) {
   boxes.forEach((b, i) => {
     const { x1, y1, x2, y2, score } = b;
 
-    // 推論時のアクセプト比640 → 元画像スケール変換
+    // 推論時のアクセプト比640 → 元画像へスケール変換
     const rx = x1 * sx;
     const ry = y1 * sy;
     const rw = (x2 - x1) * sx;
