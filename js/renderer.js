@@ -57,6 +57,6 @@ export function drawBoxes(boxes, imgElement) {
     ctx.strokeRect(rx, ry, rw, rh);
 
     const label = (typeof score === "number") ? score : 0;
-  　ctx.fillText(label.toFixed(2), rx, Math.max(16, y1 - 4));
+  　ctx.fillText(label.toFixed(2), rx, Math.max(16, ry - 4));
   });
 }
