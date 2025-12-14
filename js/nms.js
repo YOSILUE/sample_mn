@@ -24,7 +24,8 @@ function boxIoU(a, b) {
 // NMS（Non-Maximum Suppression）=非最大抑制、検出精度の調整
 //----------------------------------------------------
 function nonMaxSuppression(boxes, iouThreshold) {
-  boxes.sort((a, b) => b.conf - a.conf);
+  // score 降順
+  boxes.sort((a, b) => b.score - a.score);
 
   const selected = [];
   let suppressed = 0;
@@ -65,10 +66,10 @@ export function postprocessYOLO(
   const candidates = [];
 
   for (let i = 0; i < N; i++) {
-    const conf = data[4 * N + i];
-    if (conf > maxConf) maxConf = conf;
+    const score = data[4 * N + i];
+    if (score > maxConf) maxConf = score;
 
-    if (conf < confThreshold) continue;
+    if (score < confThreshold) continue;
 
     rawCount++;
 
@@ -83,7 +84,7 @@ export function postprocessYOLO(
       x2: cx + w / 2,
       y2: cy + h / 2,
       cx, cy, w, h,
-      conf
+      score
     });
   }
 
