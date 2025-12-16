@@ -21,7 +21,7 @@ function boxIoU(a, b) {
 }
 
 //----------------------------------------------------
-// NMS（Non-Maximum Suppression）=非最大抑制、検出精度の調整
+// NMS（Non-Maximum Suppression）=非最大抑制、基準以上の要素を残す
 //----------------------------------------------------
 function nonMaxSuppression(boxes, iouThreshold) {
   // score 降順
@@ -61,22 +61,27 @@ export function postprocessYOLO(
   log(`[POST] dims = ${out.dims.join(",")}`);
 
   let maxConf = 0;
-  let rawCount = 0;
+  let passed = 0;
 
   const candidates = [];
+
+  // クラスごとの色（将来拡張可）
+  const CLASS_COLORS = ["red", "lime", "cyan", "yellow"];
 
   for (let i = 0; i < N; i++) {
     const score = data[4 * N + i];
     if (score > maxConf) maxConf = score;
-
     if (score < confThreshold) continue;
 
-    rawCount++;
+    passed++;
 
     const cx = data[0 * N + i];
     const cy = data[1 * N + i];
     const w  = data[2 * N + i];
     const h  = data[3 * N + i];
+
+    const classId = 0; // 今は 1 クラス前提
+    const color = CLASS_COLORS[classId] || "white";
 
     candidates.push({
       x1: cx - w / 2,
@@ -84,13 +89,23 @@ export function postprocessYOLO(
       x2: cx + w / 2,
       y2: cy + h / 2,
       cx, cy, w, h,
-      score
+      
+      // 推論結果
+      score,
+      classId,
+    
+      // 描画・UI用
+      color,
+    
+      // OCR、検索結果
+      matched: false,
+      ocrText: null
     });
   }
 
   log(`[POST] max conf = ${maxConf.toFixed(4)}`);
   log(`[POST] confThreshold = ${confThreshold}`);
-  log(`[POST] after conf filter = ${rawCount}`);
+  log(`[POST] after conf filter = ${passed}`);
 
   if (candidates.length === 0) {
     log("[POST] No boxes passed confidence filter");
