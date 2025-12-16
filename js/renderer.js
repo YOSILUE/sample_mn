@@ -69,6 +69,6 @@ export function drawBoxes(boxes, imgElement) {
     }
     
   　ctx.fillText(label, rx, Math.max(16, ry - 4));
-    log(`[RENDERER] drawBoxes: ${boxes.length}`);
   });
+  log(`[RENDERER] drawBoxes: ${boxes.length}`);
 }
