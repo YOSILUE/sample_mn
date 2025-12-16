@@ -4,7 +4,7 @@ import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
 
 //アプリ更新日を出力
-log("[INFO] App update 2025.12.17_0028");
+log("[INFO] App update 2025.12.17_0252");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -18,7 +18,7 @@ ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx/";
 log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 ort.env.wasm.numThreads = 2;
 
-const modelPath = "https://yosilue.github.io/sample_mn/model/best_y11_o22.onnx";
+const modelPath = "https://yosilue.github.io/sample_mn/model/best_y11n_o22.onnx";
 log("[INIT] モデルパス = " + modelPath);
 
 // 事前ロード
