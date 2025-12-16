@@ -4,7 +4,7 @@ import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
 
 //アプリ更新日を出力
-log("[INFO] App update 2025.12.17_0339");
+log("[INFO] App update 2025.12.17_0347");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -24,11 +24,19 @@ log("[INIT] モデルパス = " + modelPath);
 // 事前ロード
 (async () => {
   log("[PRELOAD] セッション事前ロード開始…");
-  session = await ort.InferenceSession.create(modelPath, {
-    //executionProviders: ["wasm"],
+  try{
+    //例外が発生する可能性のある処理
+    session = await ort.InferenceSession.create(modelPath, {
     executionProviders: ["webgl"],
-  });
-  log("[PRELOAD] セッション事前ロード完了（WASM）");
+    });
+    log("[PRELOAD] セッション事前ロード完了（WebGL）");
+  }catch(e){
+    //例外が発生した場合の処理
+    session = await ort.InferenceSession.create(modelPath, {
+    //executionProviders: ["wasm"],
+    });
+    log("[PRELOAD] セッション事前ロード完了（WASM）");
+  }
 })();
 
 // 画像プレビュー
