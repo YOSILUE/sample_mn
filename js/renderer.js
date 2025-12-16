@@ -12,7 +12,7 @@ export function drawBoxes(boxes, imgElement) {
   const imgW = imgElement.naturalWidth;
   const imgH = imgElement.naturalHeight;
 
-  // ---- スケール変換用 ----
+  // ---- 推論空間 → 元画像空間のスケール変換用 ----
   const sx = imgW / 640;
   const sy = imgH / 640;
 
@@ -41,22 +41,34 @@ export function drawBoxes(boxes, imgElement) {
 
   // ---- 描画スタイル ----
   ctx.lineWidth = 2;
-  ctx.strokeStyle = "red";
-  ctx.fillStyle = "red";
   ctx.font = "18px sans-serif";
 
-  // ---- 描画 ----
+  // ---- 描画処理 ----
   boxes.forEach((b, i) => {
-    const { x1, y1, x2, y2, score } = b;
-
+     // ---- 状態駆動 ----
+    const color = b.color || "red";
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+  
     // 推論時のアクセプト比640 → 元画像へスケール変換
-    const rx = x1 * sx;
-    const ry = y1 * sy;
-    const rw = (x2 - x1) * sx;
-    const rh = (y2 - y1) * sy;
-    ctx.strokeRect(rx, ry, rw, rh);
+    const rx = b.x1 * sx;
+    const ry = b.y1 * sy;
+    const rw = (b.x2 - b.x1) * sx;
+    const rh = (b.y2 - b.y1) * sy;
 
-    const label = (typeof score === "number") ? score : 0;
-  　ctx.fillText(label.toFixed(2), rx, Math.max(16, ry - 4));
+    // 矩形を描画
+    ctx.strokeRect(rx, ry, rw, rh);
+    
+    // ---- 表示ラベル ----
+    let label = "";
+    
+    if (b.ocrText) {
+      label = b.ocrText;
+    } else if (typeof b.score === "number") {
+      label = b.score.toFixed(2);
+    }
+    
+  　ctx.fillText(label, rx, Math.max(16, ry - 4));
+    log(`[RENDERER] drawBoxes: ${boxes.length}`);
   });
 }
