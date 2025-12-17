@@ -11,6 +11,7 @@ log("[INFO] App update 2025.12.17_0347");
 //----------------------------------------------------
 let inputImageData = null;
 let session = null;
+let modelPath = null;
 
 // ORT 設定
 log("[INIT] ORT 設定開始...");
@@ -18,25 +19,55 @@ ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx/";
 log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 ort.env.wasm.numThreads = 2;
 
-const modelPath = "https://yosilue.github.io/sample_mn/model/best_y11n_o18.onnx";
-log("[INIT] モデルパス = " + modelPath);
+//const modelPath = "https://yosilue.github.io/sample_mn/model/best_y11n_o18.onnx";
+//log("[INIT] モデルパス = " + modelPath);
 
 // 事前ロード
 (async () => {
   log("[PRELOAD] セッション事前ロード開始…");
-  try{
-    //例外が発生する可能性のある処理
-    session = await ort.InferenceSession.create(modelPath, {
-    executionProviders: ["webgl"],
-    });
-    log("[PRELOAD] セッション事前ロード完了（WebGL）");
-  }catch(e){
-    //例外が発生した場合の処理
-    session = await ort.InferenceSession.create(modelPath, {
-    //executionProviders: ["wasm"],
-    });
-    log("[PRELOAD] セッション事前ロード完了（WASM）");
+  //opsetの高い順にテスト
+  const PathList = [
+    "https://yosilue.github.io/sample_mn/model/best_y11n_o21.onnx", 
+    "https://yosilue.github.io/sample_mn/model/best_y11n_o20.onnx", 
+    "https://yosilue.github.io/sample_mn/model/best_y11n_o19.onnx", 
+    "https://yosilue.github.io/sample_mn/model/best_y11n_o18.onnx"];
+
+  //WebGLでmodelPathの初期化にチャレンジ
+  for (let i = 0; i < PathList.length; i++) {
+    modelPath = PathList[i];
+    log("[TEST] WebGL LOAD model = " + modelPath);
+    try{
+      //例外が発生する可能性のある処理
+      session = await ort.InferenceSession.create(modelPath, {
+      executionProviders: ["webgl"],
+      });
+      log("[INIT] モデルパス = " + modelPath);
+      log("[PRELOAD] セッション事前ロード完了（WebGL）");
+      break;
+    }catch(e){
+      //例外が発生した場合の処理
+      modelPath = null;
+    }
   }
+  //WebGLでmodelPathが初期化されなかったら(nullだったら)WASMで実施
+  if(!modelPath){
+    for (let i = 0; i < PathList.length; i++) {
+      modelPath = PathList[i];
+      log("[TEST] WASM LOAD model = " + modelPath);
+      try{
+        //例外が発生する可能性のある処理
+        session = await ort.InferenceSession.create(modelPath, {
+        executionProviders: ["wasm"],
+        });
+        log("[INIT] モデルパス = " + modelPath);
+        log("[PRELOAD] セッション事前ロード完了（WASM）");
+        break;
+      }catch(e){
+        //例外が発生した場合の処理
+        modelPath = null;
+      }
+    }//for end
+  }//if end
 })();
 
 // 画像プレビュー
