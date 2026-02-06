@@ -12,6 +12,7 @@ log("[INFO] App update 2026.02.06_1203");
 let inputImageData = null;
 let session = null;
 let modelPath = null;
+let boxes = [];
 
 // ORT 設定
 log("[INIT] ORT 設定開始...");
@@ -163,7 +164,8 @@ document.getElementById("runBtn").onclick = async () => {
     const outputs = await session.run({ images: tensor });
     const t1 = performance.now();
   
-    const boxes = postprocessYOLO(outputs, 0.05, 0.45);
+    //boxesはグローバル変数
+    boxes = postprocessYOLO(outputs, 0.05, 0.45);
     log(`[POST] final boxes=${boxes.length}`);
     console.log(boxes);
 
