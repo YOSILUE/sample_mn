@@ -4,7 +4,7 @@ import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
 
 //アプリ更新日を出力
-log("[INFO] App update 2025.12.17_0347");
+log("[INFO] App update 2026.02.06_1203");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -27,7 +27,7 @@ ort.env.wasm.numThreads = 2;
   log("[PRELOAD] セッション事前ロード開始…");
   //opsetの高い順にテスト
   const PathList = [
-    "https://yosilue.github.io/sample_mn/model/best_y11n_o21.onnx", 
+    "https://yosilue.github.io/sample_mn/model/best_y11n_o21_002.onnx", 
     "https://yosilue.github.io/sample_mn/model/best_y11n_o20.onnx", 
     "https://yosilue.github.io/sample_mn/model/best_y11n_o19.onnx", 
     "https://yosilue.github.io/sample_mn/model/best_y11n_o18.onnx"];
