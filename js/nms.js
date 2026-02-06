@@ -47,7 +47,7 @@ function nonMaxSuppression(boxes, iouThreshold) {
 }
 
 //----------------------------------------------------
-// YOLOv8 postprocess + NMS
+// YOLOv11 postprocess + NMS
 //----------------------------------------------------
 export function postprocessYOLO(
   outputs,
@@ -80,7 +80,7 @@ export function postprocessYOLO(
     const w  = data[2 * N + i];
     const h  = data[3 * N + i];
 
-    const classId = 0; // 今は 1 クラス前提
+    const classId = 0; // 今は 1 クラス前提 ※0="red"
     const color = CLASS_COLORS[classId] || "white";
 
     candidates.push({
