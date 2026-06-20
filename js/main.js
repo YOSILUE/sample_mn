@@ -5,7 +5,7 @@ import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
 import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js";
 
 //アプリ更新日を出力
-log("[INFO] App update 2026.02.06_1203");
+log("[INFO] App update 2026.06.20_2350");
 
 //----------------------------------------------------
 // グローバル変数初期化
