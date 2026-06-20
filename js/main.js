@@ -6,7 +6,7 @@ import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js"; //画�
 import { initOCR, recognizeText} from "https://yosilue.github.io/sample_mn/js/ocr.js"; //OCRモジュール
 
 //アプリ更新日を出力
-log("[INFO] App update 2026.06.21_0048");
+log("[INFO] App update 2026.06.21_0514");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -31,9 +31,7 @@ ort.env.wasm.numThreads = 2;
   //opsetの高い順にテスト
   const PathList = [
     "https://yosilue.github.io/sample_mn/model/best_y11n_o21_002.onnx", 
-    "https://yosilue.github.io/sample_mn/model/best_y11n_o20.onnx", 
-    "https://yosilue.github.io/sample_mn/model/best_y11n_o19.onnx", 
-    "https://yosilue.github.io/sample_mn/model/best_y11n_o18.onnx"];
+    "https://yosilue.github.io/sample_mn/model/best_y11n_o20.onnx"];
 
   //WebGLでmodelPathの初期化にチャレンジ
   for (let i = 0; i < PathList.length; i++) {

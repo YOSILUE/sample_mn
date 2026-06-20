@@ -96,6 +96,7 @@ export async function recognizeText(canvas) {
 
     log(`[OCR] angle=${angle} text="${text}" conf=${conf.toFixed(1)}`);
 
+    const allTexts = [];
     allTexts.push(text);
   }
 
