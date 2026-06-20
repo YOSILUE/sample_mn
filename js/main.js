@@ -196,7 +196,7 @@ document.getElementById("runBtn").onclick = async () => {
 
       //OCRテスト
       const ocrResult = await recognizeText(cropCanvas);
-      log(`[OCR TEST] ${ocrResult.text}`);
+      log(`[OCR TEST] ${ocrResult}`);
       
     }
     
