@@ -1,3 +1,4 @@
+// js/crop.js
 import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
 
 //----------------------------------------------------
@@ -24,7 +25,6 @@ export function cropBox(imgElement, box) {
 
   canvas.width = w;
   canvas.height = h;
-  log(`[OCR] crop=${cropCanvas.width}x${cropCanvas.height}`);
   
   ctx.drawImage(
     imgElement,
