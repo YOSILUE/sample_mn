@@ -70,7 +70,7 @@ export async function recognizeText(canvas) {
 
   const allTexts = [];
   const angles = [];
-  for (let a = -40; a <= 40; a += 5) {
+  for (let a = -35; a <= 35; a += 7) {
     angles.push(a);
   }
 
