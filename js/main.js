@@ -1,11 +1,12 @@
 // js/main.js
-import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
-import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
-import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
-import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js";
+import { log } from "https://yosilue.github.io/sample_mn/js/logger.js"; //ログ出力モジュール
+import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js"; //推論モジュール
+import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js"; //BOX描画モジュール
+import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js"; //画像切り取りモジュール
+import { initOCR, recognizeText} from "https://yosilue.github.io/sample_mn/js/ocr.js"; //OCRモジュール
 
 //アプリ更新日を出力
-log("[INFO] App update 2026.06.21_0035");
+log("[INFO] App update 2026.06.21_0048");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -15,8 +16,8 @@ let session = null;
 let modelPath = null;
 let boxes = [];
 
-// ORT 設定
-log("[INIT] ORT 設定開始...");
+// ORT(ONNX Runtime) 設定
+log("[INIT] ONNX Runtime 設定開始...");
 ort.env.wasm.wasmPaths = "https://yosilue.github.io/sample_mn/onnx/";
 log("[INIT] wasmPaths = " + ort.env.wasm.wasmPaths);
 ort.env.wasm.numThreads = 2;
@@ -70,6 +71,9 @@ ort.env.wasm.numThreads = 2;
       }
     }//for end
   }//if end
+
+  //OCR初期化
+  await initOCR();
 })();
 
 // 画像プレビュー
@@ -190,8 +194,12 @@ document.getElementById("runBtn").onclick = async () => {
       //余白の設定
       cropCanvas.style.marginTop = "10px";
       document.body.appendChild(cropCanvas);
-    
       log("[CROP] test image appended");
+
+      //OCRテスト
+      const ocrResult = await recognizeText(cropCanvas);
+      log(`[OCR TEST] ${ocrResult.text}`);
+      
     }
     
   } catch (e) {
