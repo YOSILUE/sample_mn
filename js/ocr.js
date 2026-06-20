@@ -74,13 +74,8 @@ export async function recognizeText(canvas) {
     angles.push(a);
   }
 
-  let bestText = "";
-  let bestConf = -1;
-
   for (const angle of angles) {
-
     const target = angle === 0 ? canvas : rotateCanvas(canvas, angle);
-
     const result = await worker.recognize(target);
 
     const text =
@@ -88,10 +83,16 @@ export async function recognizeText(canvas) {
       .trim()
       .toUpperCase();
 
-    const conf = result.data.confidence;
-
+    const conf = result.data.confidence;  
     log(`[OCR] angle=${angle} text="${text}" conf=${conf.toFixed(1)}`);
 
+    // --------------------
+    // 高信頼なら即採用
+    // --------------------
+    if (conf >= 90 && /^\d{3}$/.test(text) ) {
+      log(`[OCR] EARLY ACCEPT text="${text}" conf=${conf.toFixed(1)}`);
+      return text;
+    }
     allTexts.push(text);
   }
 
