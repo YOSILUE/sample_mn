@@ -112,7 +112,7 @@ function voteNumber(results) {
   results.forEach(text => {
 
     // 数字だけ抽出
-    const num = text.replace(/\d{3}/, '"$&"');
+    const num = text;
 
     // 3桁のみ採用
     if (num.length !== 3) return;
