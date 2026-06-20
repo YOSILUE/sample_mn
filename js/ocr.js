@@ -66,10 +66,9 @@ export async function recognizeText(canvas) {
     throw new Error("OCR worker not initialized");
   }
 
-  log(
-    `[OCR] recognize start (${canvas.width}x${canvas.height})`
-  );
+  log(`[OCR] recognize start (${canvas.width}x${canvas.height})`);
 
+  const allTexts = [];
   const angles = [];
   for (let a = -45; a <= 45; a += 5) {
     angles.push(a);
@@ -80,10 +79,7 @@ export async function recognizeText(canvas) {
 
   for (const angle of angles) {
 
-    const target =
-      angle === 0
-        ? canvas
-        : rotateCanvas(canvas, angle);
+    const target = angle === 0 ? canvas : rotateCanvas(canvas, angle);
 
     const result = await worker.recognize(target);
 
@@ -96,7 +92,6 @@ export async function recognizeText(canvas) {
 
     log(`[OCR] angle=${angle} text="${text}" conf=${conf.toFixed(1)}`);
 
-    const allTexts = [];
     allTexts.push(text);
   }
 
