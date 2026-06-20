@@ -201,7 +201,7 @@ document.getElementById("runBtn").onclick = async () => {
     }
     
   } catch (e) {
-      log("[ERROR] 推論失敗: " + e);
+      log("[ERROR] : " + e);
   }
 };
 

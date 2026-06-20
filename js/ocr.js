@@ -97,6 +97,11 @@ export async function recognizeText(canvas) {
   }
 
   const voted = voteNumber(allTexts);
+  if (!voted.number) {
+    log("[OCR] No valid 3-digit number found");
+    return null;
+  }
+
   log(`[OCR] vote winner=${voted.number} count=${voted.count}`);
   log(`[OCR] votes=${JSON.stringify(voted.votes)}`);
 
