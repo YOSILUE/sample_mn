@@ -24,7 +24,8 @@ export function cropBox(imgElement, box) {
 
   canvas.width = w;
   canvas.height = h;
-
+  log(`[OCR] crop=${cropCanvas.width}x${cropCanvas.height}`);
+  
   ctx.drawImage(
     imgElement,
     x,
