@@ -6,7 +6,7 @@ import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js"; //画�
 import { initOCR, recognizeText} from "https://yosilue.github.io/sample_mn/js/ocr.js"; //OCRモジュール
 
 //アプリ更新日を出力
-log("[INFO] App update 2026.06.21_0524");
+log("[INFO] App update 2026.06.21_0618");
 
 //----------------------------------------------------
 // グローバル変数初期化

@@ -70,7 +70,7 @@ export async function recognizeText(canvas) {
 
   const allTexts = [];
   const angles = [];
-  for (let a = -45; a <= 45; a += 5) {
+  for (let a = -40; a <= 40; a += 5) {
     angles.push(a);
   }
 
@@ -112,7 +112,7 @@ function voteNumber(results) {
   results.forEach(text => {
 
     // 数字だけ抽出
-    const num = text.replace(/\D/g, "");
+    const num = text.match(/\d{3}/);
 
     // 3桁のみ採用
     if (num.length !== 3) return;
