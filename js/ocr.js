@@ -20,7 +20,7 @@ export async function initOCR() {
 
   await worker.setParameters({
     tessedit_char_whitelist:
-      "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "0123456789"
   });
 
   log("[OCR] worker ready");
@@ -70,15 +70,10 @@ export async function recognizeText(canvas) {
     `[OCR] recognize start (${canvas.width}x${canvas.height})`
   );
 
-  const angles = [
-    -45,
-    -30,
-    -15,
-     0,
-     15,
-     30,
-     45
-  ];
+  const angles = [];
+  for (let a = -45; a <= 45; a += 5) {
+    angles.push(a);
+  }
 
   let bestText = "";
   let bestConf = -1;
@@ -90,27 +85,59 @@ export async function recognizeText(canvas) {
         ? canvas
         : rotateCanvas(canvas, angle);
 
-    const result =
-      await worker.recognize(target);
+    const result = await worker.recognize(target);
 
     const text =
-      result.data.text.trim();
+      result.data.text
+      .trim()
+      .toUpperCase();
 
-    const conf =
-      result.data.confidence;
+    const conf = result.data.confidence;
 
-    log(
-      `[OCR] angle=${angle} text="${text}" conf=${conf.toFixed(1)}`
-    );
+    log(`[OCR] angle=${angle} text="${text}" conf=${conf.toFixed(1)}`);
 
-    if (conf > bestConf) {
-      bestConf = conf;
-      bestText = text;
-    }
+    allTexts.push(text);
   }
 
+  const voted = voteNumber(allTexts);
+  log(`[OCR] vote winner=${voted.number} count=${voted.count}`);
+  log(`[OCR] votes=${JSON.stringify(voted.votes)}`);
+
+  return voted.number;
+}
+
+//----------------------------------------------------
+// OCR結果を集計
+//----------------------------------------------------
+function voteNumber(results) {
+
+  const votes = {};
+
+  results.forEach(text => {
+
+    // 数字だけ抽出
+    const num = text.replace(/\D/g, "");
+
+    // 3桁のみ採用
+    if (num.length !== 3) return;
+
+    votes[num] = (votes[num] || 0) + 1;
+  });
+
+  let bestNumber = null;
+  let bestCount = 0;
+
+  Object.entries(votes).forEach(([num, count]) => {
+
+    if (count > bestCount) {
+      bestNumber = num;
+      bestCount = count;
+    }
+  });
+
   return {
-    text: bestText,
-    confidence: bestConf
+    number: bestNumber,
+    count: bestCount,
+    votes
   };
 }
