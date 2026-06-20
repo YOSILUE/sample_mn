@@ -2,6 +2,7 @@
 import { log } from "https://yosilue.github.io/sample_mn/js/logger.js";
 import { postprocessYOLO } from "https://yosilue.github.io/sample_mn/js/nms.js";
 import { drawBoxes } from "https://yosilue.github.io/sample_mn/js/renderer.js";
+import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js";
 
 //アプリ更新日を出力
 log("[INFO] App update 2026.02.06_1203");
@@ -177,6 +178,22 @@ document.getElementById("runBtn").onclick = async () => {
     const fps = 1000 / elapsed;
     log(`[PERF] 推論時間: ${elapsed.toFixed(2)} ms`);
     log(`[PERF] FPS: ${fps.toFixed(2)}`);
+
+    //----------------------------------------------------
+    // cropテスト
+    //----------------------------------------------------
+    if (boxes.length > 0) {
+      //画像の切り取り
+      const cropCanvas = cropBox(imgElement, boxes[0]);
+      cropCanvas.style.border = "2px solid red";
+
+      //余白の設定
+      cropCanvas.style.marginTop = "10px";
+      document.body.appendChild(cropCanvas);
+    
+      log("[CROP] test image appended");
+    }
+    
   } catch (e) {
       log("[ERROR] 推論失敗: " + e);
   }
