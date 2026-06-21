@@ -6,7 +6,7 @@ import { cropBox } from "https://yosilue.github.io/sample_mn/js/crop.js"; //画�
 import { initOCR, recognizeText} from "https://yosilue.github.io/sample_mn/js/ocr.js"; //OCRモジュール
 
 //アプリ更新日を出力
-log("[INFO] App update 2026.06.21_0618");
+log("[INFO] App update 2026.06.22_0544");
 
 //----------------------------------------------------
 // グローバル変数初期化
@@ -14,7 +14,8 @@ log("[INFO] App update 2026.06.21_0618");
 let inputImageData = null;
 let session = null;
 let modelPath = null;
-let boxes = [];
+let drawList = [];// 描画用　YOLO検出結果が入る
+let catalogList = {};// OCR結果保存用
 
 // ORT(ONNX Runtime) 設定
 log("[INIT] ONNX Runtime 設定開始...");
@@ -167,14 +168,14 @@ document.getElementById("runBtn").onclick = async () => {
     const outputs = await session.run({ images: tensor });
     const t1 = performance.now();
   
-    //boxesはグローバル変数
-    boxes = postprocessYOLO(outputs, 0.05, 0.45);
-    log(`[POST] final boxes=${boxes.length}`);
-    console.log(boxes);
+    //drawListはグローバル変数
+    drawList = postprocessYOLO(outputs, 0.05, 0.45);
+    log(`[POST] final drawList=${drawList.length}`);
+    console.log(drawList);
 
     // ★ 描画
     //const imgElement = document.getElementById("preview");
-    drawBoxes(boxes, imgElement);
+    drawBoxes(drawList, imgElement);
     
     const elapsed = t1 - t0; // ms
     const fps = 1000 / elapsed;
@@ -184,9 +185,9 @@ document.getElementById("runBtn").onclick = async () => {
     //----------------------------------------------------
     // cropテスト
     //----------------------------------------------------
-    if (boxes.length > 0) {
+    if (drawList.length > 0) {
       //画像の切り取り
-      const cropCanvas = cropBox(imgElement, boxes[0]);
+      const cropCanvas = cropBox(imgElement, drawList[0]);
       cropCanvas.style.border = "2px solid red";
 
       //余白の設定
