@@ -195,7 +195,10 @@ document.getElementById("runBtn").onclick = async () => {
       log("[CROP] test image appended");
 
       //OCRテスト
+      const ocrStart = performance.now();
       const ocrResult = await recognizeText(cropCanvas);
+      const ocrEnd = performance.now();
+      log(`[PERF] OCR=${(ocrEnd-ocrStart).toFixed(1)} ms`);
       log(`[OCR TEST] ${ocrResult}`);
       
     }
